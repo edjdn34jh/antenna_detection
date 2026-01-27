@@ -211,6 +211,6 @@ __marimo__/
 # Other
 data/hauts_de_france.gpkg-shm
 data/hauts_de_france.gpkg-wal
-data/antenna_tile/
+data/antenna_tiles/
 data/pcrs_tiles_tmp/
 
