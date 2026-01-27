@@ -14,7 +14,7 @@ pcrs_tiles_gdf = gpd.read_file("./data/dalles.geojson")
 
 
 # Load the antenna data
-antenna_gdf = gpd.read_file("./antenne_reproj2154.gpkg")
+antenna_gdf = gpd.read_file("./data/hauts_de_france.gpkg")
 
 
 # Convert to same crs

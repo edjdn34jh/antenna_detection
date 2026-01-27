@@ -206,3 +206,8 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+# Other
+data/hauts_de_france.gpkg-shm
+data/hauts_de_france.gpkg-wal
