@@ -39,7 +39,7 @@ sub_dirs = ["a", "b", "c", "d", "e", "f", "gn", "gs", "h", "i", "j", "k", "l", "
 all_tiles = list(set(antenna_tiles_join_gdf["nomImage"].to_list()))
 
 # The tile we want to download
-tile_name = all_tiles[1]
+tile_name = "HFG-2021-0649-6978-LA93-0M05-RVB.tif"
 
 # List of all unique antennas that seats within the given tile
 points = list(set((antenna_tiles_join_gdf[antenna_tiles_join_gdf["nomImage"] == tile_name])["geometry"].tolist()))
@@ -60,15 +60,15 @@ for dir in sub_dirs:
             print(f'Downloaded {url}')
 
 
-# Clip a 30x30m square around the points in the tiles and save them as tif files
+# Clip a 60x60m square around the points in the tiles and save them as tif files
 for i, point in enumerate(points):
 
-    rect = rectangle_around_point(point, 15)
+    rect = rectangle_around_point(point, 30)
 
     clip_tiff(
         tiff_path=f"./data/pcrs_tiles_tmp/{tile_name}",
         geometry=rect,
-        output_path=f"./data/pcrs_tiles_tmp/{point}.tif"
+        output_path=f"./data/antenna_tile/{point}.tif"
     )
 
 # Remove the dowloaded tile to save memory space
