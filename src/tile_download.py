@@ -53,7 +53,7 @@ for dir in sub_dirs:
     r = requests.get(url)
 
     if r.status_code == 200:
-        with open(f"./pcrs_images/{tile_name}", "wb") as f:
+        with open(f"./data/pcrs_tiles_tmp/{tile_name}", "wb") as f:
 
             f.write(r.content)
 
@@ -66,13 +66,13 @@ for i, point in enumerate(points):
     rect = rectangle_around_point(point, 15)
 
     clip_tiff(
-        tiff_path=f"./pcrs_images/{tile_name}",
+        tiff_path=f"./data/pcrs_tiles_tmp/{tile_name}",
         geometry=rect,
-        output_path=f"./antenna_images/{point}.tif"
+        output_path=f"./data/pcrs_tiles_tmp/{point}.tif"
     )
 
 # Remove the dowloaded tile to save memory space
-file_to_rem = pathlib.Path(f"./pcrs_images/{tile_name}")
+file_to_rem = pathlib.Path(f"./data/pcrs_tiles_tmp/{tile_name}")
 file_to_rem.unlink()
 
 
