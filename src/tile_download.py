@@ -10,7 +10,7 @@ import pathlib
 from miscallenous import clip_tiff, rectangle_around_point
 
 # Load the pcrs tiles data
-pcrs_tiles_gdf = gpd.read_file("./dalles.geojson")
+pcrs_tiles_gdf = gpd.read_file("./data/dalles.geojson")
 
 
 # Load the antenna data
