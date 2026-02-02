@@ -38,42 +38,64 @@ sub_dirs = ["a", "b", "c", "d", "e", "f", "gn", "gs", "h", "i", "j", "k", "l", "
 # List of all uniques tiles where there are antennas
 all_tiles = list(set(antenna_tiles_join_gdf["nomImage"].to_list()))
 
-# The tile we want to download
-tile_name = "HFG-2021-0649-6978-LA93-0M05-RVB.tif"
 
-# List of all unique antennas that seats within the given tile
-points = list(set((antenna_tiles_join_gdf[antenna_tiles_join_gdf["nomImage"] == tile_name])["geometry"].tolist()))
+skip_loop = True
+
+# Iterates over all individual tiles containing at least an antenna
+for tile_name in all_tiles:
+
+    downloaded = False
+
+    if tile_name == "HFC-2022-0766-6987-LA93-0M05-RVB.tif":
+        
+        skip_loop = False
+        print("Starting dowload from {tile_name}")
+
+    if skip_loop:
+        next
+
+    else:
+        # List of all unique antennas that seats within the given tile
+        points = antenna_tiles_join_gdf.loc[antenna_tiles_join_gdf["nomImage"] == tile_name,["geometry", "sta_nm_anfr"]]
+        points = set([
+            (geom, sta)          # geom is a Shapely geometry object
+            for geom, sta in zip(points["geometry"], points["sta_nm_anfr"])
+        ])
 
 
-# Download the chosen tile
-for dir in sub_dirs:
 
-    url = root_url + dir + '/' + tile_name
+        # Download the chosen tile
+        for dir in sub_dirs:
 
-    r = requests.get(url)
+            url = root_url + dir + '/' + tile_name
 
-    if r.status_code == 200:
-        with open(f"./data/pcrs_tiles_tmp/{tile_name}", "wb") as f:
+            r = requests.get(url)
 
-            f.write(r.content)
+            if r.status_code == 200:
+                with open(f"/host/img_antenna/data/pcrs_tiles_tmp/{tile_name}", "wb") as f:
 
-            print(f'Downloaded {url}')
+                    f.write(r.content)
+
+                    print(f'Downloaded {url}')
+
+                    downloaded = True
 
 
-# Clip a 60x60m square around the points in the tiles and save them as tif files
-for i, point in enumerate(points):
+        # Clip a 60x60m square around the points in the tiles and save them as tif files
+        if downloaded:
+            for i, point in enumerate(points):
 
-    rect = rectangle_around_point(point, 30)
+                rect = rectangle_around_point(point[0], 30)
 
-    clip_tiff(
-        tiff_path=f"./data/pcrs_tiles_tmp/{tile_name}",
-        geometry=rect,
-        output_path=f"./data/antenna_tile/{point}.tif"
-    )
+                clip_tiff(
+                    tiff_path=f"/host/img_antenna/data/pcrs_tiles_tmp/{tile_name}",
+                    geometry=rect,
+                    output_path=f"/host/img_antenna/data/antenna_tiles/{point[1]}.tif"
+                )
 
-# Remove the dowloaded tile to save memory space
-file_to_rem = pathlib.Path(f"./data/pcrs_tiles_tmp/{tile_name}")
-file_to_rem.unlink()
+            # Remove the dowloaded tile to save memory space
+            file_to_rem = pathlib.Path(f"/host/img_antenna/data/pcrs_tiles_tmp/{tile_name}")
+            file_to_rem.unlink()
 
 
 
