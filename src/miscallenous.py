@@ -56,3 +56,51 @@ def rectangle_around_point(point, half_size):
         x + half_size,
         y + half_size
     )
+
+
+
+class TilePathError(TypeError):
+    """Raised when a component of a tile‑path is not a string."""
+    def __init__(self, component_name: str, bad_value):
+        msg = (
+            f"Unable to build the tile URL because the value for "
+            f"`{component_name}` is not a string (got {type(bad_value)!r}).\n"
+            "Typical causes:\n"
+            "- A numeric column (e.g. a float) was read from a CSV/DB.\n"
+            "- An earlier calculation produced a NaN/None that got cast to float.\n"
+            "\nFix the upstream data or cast the value to `str` before concatenation."
+        )
+        super().__init__(msg)
+
+
+def safe_concat(*parts: tuple) -> str:
+    """
+    Concatenate path components safely.
+
+    Parameters
+    ----------
+    *parts : tuple
+        Any number of values that should form a URL/path.  All parts must be
+        convertible to ``str`` *without* being a ``float`` (including ``nan``).
+
+    Returns
+    -------
+    str
+        The concatenated string.
+
+    Raises
+    ------
+    TilePathError
+        If any part is a ``float`` (or ``np.nan``) – the most common source of the
+        “can only concatenate str (not "float") to str” error.
+    """
+    cleaned_parts = []
+    for i, p in enumerate(parts):
+        # Detect floats (including numpy.float64, pandas Float64, math.nan, etc.)
+        if isinstance(p, float):
+            raise TilePathError(f"part #{i+1}", p)
+
+        # Anything else we coerce to string – this also handles None gracefully.
+        cleaned_parts.append("" if p is None else str(p))
+
+    return "".join(cleaned_parts)

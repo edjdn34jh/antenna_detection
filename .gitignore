@@ -214,3 +214,13 @@ data/hauts_de_france.gpkg-wal
 data/antenna_tiles/
 data/pcrs_tiles_tmp/
 
+data/clip_lille.cpg
+data/clip_lille.dbf
+data/clip_lille.prj
+data/clip_lille.shp
+data/clip_lille.shx
+data/observatoireod_20260129.dbf
+data/observatoireod_20260129.prj
+data/observatoireod_20260129.shp
+data/observatoireod_20260129.shx
+
