@@ -15,7 +15,7 @@ pcrs_tiles_gdf = gpd.read_file("./data/dalles.geojson")
 
 
 # Load the antenna data
-antenna_gdf = gpd.read_file("./data/lille.gpkg")
+antenna_gdf = gpd.read_file("./data/Exportlight_983stations_Nord_ENSG(1).gpkg")
 
 antenna_gdf = antenna_gdf.to_crs('2154')
 
@@ -60,10 +60,10 @@ for tid, tile_name in enumerate(all_tiles):
     else:
         print(tile_name)
         # List of all unique antennas that seats within the given tile
-        points = antenna_tiles_join_gdf.loc[antenna_tiles_join_gdf["nomImage"] == tile_name,["geometry", "sta_nm_anf"]]
+        points = antenna_tiles_join_gdf.loc[antenna_tiles_join_gdf["nomImage"] == tile_name,["geometry", "Numéro ANFR"]]
         points = set([
             (geom, sta)          # geom is a Shapely geometry object
-            for geom, sta in zip(points["geometry"], points["sta_nm_anf"])
+            for geom, sta in zip(points["geometry"], points["Numéro ANFR"])
         ])
 
 
@@ -99,7 +99,7 @@ for tid, tile_name in enumerate(all_tiles):
                 clip_tiff(
                     tiff_path=f"/host/img_antenna/data/pcrs_tiles_tmp/{tile_name}",
                     geometry=rect,
-                    output_path=f"/host/img_antenna/data/antenna_tiles/lille/{point[1]}.tif"
+                    output_path=f"/host/img_antenna/data/antenna_tiles/nord/{point[1]}.tif"
                 )
 
             # Remove the dowloaded tile to save memory space
